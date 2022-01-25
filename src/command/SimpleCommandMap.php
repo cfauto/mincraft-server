@@ -68,6 +68,7 @@ use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\lang\KnownTranslationFactory;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
+use function array_map;
 use function array_shift;
 use function count;
 use function explode;
@@ -93,7 +94,7 @@ class SimpleCommandMap implements CommandMap{
 	}
 
 	private function setDefaultCommands() : void{
-		$this->registerAll("pocketmine", [
+		$this->registerAll("pocketmine", array_map(fn(Command $c) => new AutoPermissionCheckingCommandProxy($c), [
 			new BanCommand("ban"),
 			new BanIpCommand("ban-ip"),
 			new BanListCommand("banlist"),
@@ -134,7 +135,7 @@ class SimpleCommandMap implements CommandMap{
 			new TransferServerCommand("transferserver"),
 			new VersionCommand("version"),
 			new WhitelistCommand("whitelist")
-		]);
+		]));
 	}
 
 	public function registerAll(string $fallbackPrefix, array $commands) : void{
